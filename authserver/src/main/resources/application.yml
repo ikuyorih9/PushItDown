@@ -1,0 +1,33 @@
+server:
+  port: 9000
+
+jwt:
+  secret: 3q2+7w==EXAMPLEKEY123456789012345678901234567890
+  expiration: 3600000  # Tempo de expiração em milissegundos (1 hora)
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          oidc-client:
+            registration:
+              client-id: "oidc-client"
+              client-secret: "{noop}secret"
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+              redirect-uris:
+                - "http://client.local:8080/login/oauth2/code/oidc-client"
+              post-logout-redirect-uris:
+                - "http://client.local:8080/"
+              scopes:
+                - "openid"
+                - "profile"
+            require-authorization-consent: true

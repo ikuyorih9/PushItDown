@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando...</title>
+    <script>
+        function getCookie(name) {
+            let cookies = document.cookie.split('; ');
+            for (let i = 0; i < cookies.length; i++) {
+                let parts = cookies[i].split('=');
+                if (parts[0] === name) {
+                    return decodeURIComponent(atob(parts[1])); // Decodifica Base64
+                }
+            }
+            return null;
+        }
+
+        window.onload = async function () {
+        try {
+            // Verifica se os dados já estão no sessionStorage
+            let tokenData = sessionStorage.getItem("tokenData");
+            let userInfo = sessionStorage.getItem("userInfo");
+
+            if (!tokenData || !userInfo) {
+                // Faz a requisição para obter os dados do token
+                let tokenResponse = await fetch("http://client.local:8080/user/token", {
+                    credentials: "include", // Importante para enviar cookies na requisição
+                });
+
+                if (!tokenResponse.ok) {
+                    throw new Error("Erro ao carregar os dados do token.");
+                }
+
+                tokenData = await tokenResponse.json(); // Converte a resposta para JSON
+                sessionStorage.setItem("tokenData", JSON.stringify(tokenData)); // Salva no sessionStorage
+
+                // Faz a requisição para obter as informações do usuário
+                let infoResponse = await fetch("http://client.local:8080/user/info", {
+                    credentials: "include",
+                });
+
+                if (!infoResponse.ok) {
+                    throw new Error("Erro ao carregar as informações do usuário.");
+                }
+
+                userInfo = await infoResponse.json(); // Converte a resposta para JSON
+                sessionStorage.setItem("userInfo", JSON.stringify(userInfo)); // Salva no sessionStorage
+            } else {
+                // Se os dados já estão no sessionStorage, converte de volta para JSON
+                tokenData = JSON.parse(tokenData);
+                userInfo = JSON.parse(userInfo);
+            }
+
+            setTimeout(() => {
+                window.location.href = "http://client.local:8080/";
+            }, 1000); // Optional delay of 2 seconds for better user experience
+
+        } catch (error) {
+            document.getElementById("message").textContent = error.message;
+        }
+    };
+
+    </script>
+</head>
+<body>
+    <h1>Redirecionamento Concluído</h1>
+    <p id="message">Carregando dados...</p>
+</body>
+</html>
