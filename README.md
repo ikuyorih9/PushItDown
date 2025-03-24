@@ -100,6 +100,8 @@ spring:
 ```
 > 💻 ***Código**: configuração do das informações de autenticação.*
 
+---
+
 ### 🎲 Busca por usuários na base de dados para autenticação
 
 Para que um usuário possa ser buscado na base de dados para autenticação, é preciso configurar um `UserDetailsService`, uma interface do Spring Security usada para carregar detalhes do usuário durante o processo de autenticação. Ele é responsável por buscar os dados do usuário (como nome, senha e permissões) a partir de uma fonte de dados, como um banco de dados, um serviço externo ou até mesmo uma lista em memória.
@@ -154,5 +156,7 @@ public AuthenticationManager authenticationManager(
 }
 ```
 > 💻 ***Código**: configuração do AuthenticationManager.*
+
+---
 
 ### 🌐 Criação dos endpoints
