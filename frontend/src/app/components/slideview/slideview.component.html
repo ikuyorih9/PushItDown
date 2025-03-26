@@ -1,0 +1,9 @@
+<div class="mydiv">
+    <button (click)="prev()">&#10094;</button>
+    <img [src]="quotes[index].image" alt="Slide">
+    <div class="messageDiv">
+        <p>{{quotes[index].quote}}</p>
+        <p>{{quotes[index].owner}}</p>
+    </div>
+    <button (click)="next()">&#10095;</button>
+</div>

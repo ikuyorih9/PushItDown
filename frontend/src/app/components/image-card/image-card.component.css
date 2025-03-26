@@ -1,0 +1,22 @@
+div{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;    
+    height: 100%;
+}
+
+img {
+    border-radius: 30px;
+    width: 200px;
+}
+
+p {
+    position: relative;
+    bottom: 50px;
+    background-color: black;
+    color:white;
+    border-radius: 5px;
+
+    padding: 0px 10px 0px 10px;
+}

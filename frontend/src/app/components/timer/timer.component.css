@@ -1,0 +1,38 @@
+div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:flex-start;
+    height: 100%;
+    margin: 0px 10px 0px 10px;
+}
+
+h2 {
+    font-size: 7vw;
+    background-color: #1f3d63;
+    color: #d6e0ed;
+    border-radius: 20px;
+    margin: 10px 0px 10px 0px;
+    padding: 0px 20px 0px 20px;
+}
+
+button {
+    border: 0px;
+    border-radius: 10px;
+    width: 100%;
+    height: 5vh;
+    font-size: 3vh;
+    margin: 10px 0px 10px 0px;
+    
+    background-color: #1f3d63;
+    color: #d6e0ed;
+}
+
+button:hover {
+    background-color: #3466a5;
+    color: #d6e0ed;
+    transform: scale(1.05);
+}
+
+
+

@@ -1,0 +1,54 @@
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    position: fixed; /* Fixa o header no topo */
+    top: 0; /* Alinha no topo */
+    left: 0; /* Alinha à esquerda */
+    width: 100%; /* Faz o header ocupar toda a largura */
+    background-color: #1f3d63; /* Cor de fundo */
+    color: #d6e0ed; /* Cor do texto */
+    font-size: 20px;
+    padding: 5px 20px 5px 20px; /* Espaçamento interno */
+    text-align: left; /* Alinha o texto à esquerda */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra */
+    z-index: 1000; /* Garante que o header fique acima de outros elementos */
+}
+
+h1 {
+    font-size: 25px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+ul {
+    flex-grow: 1;
+    list-style-type: none;
+    margin: 0;
+    margin-right: 40px;
+    padding: 0;
+    overflow: hidden;
+  }
+li {
+    float: right;
+    margin: 5px 5px 5px 5px;
+}
+
+a {
+    border-radius: 10px;
+    padding: 5px 10px 5px 10px;
+    text-decoration: none;
+    
+}
+
+a:hover{
+    background-color: #3466a5;
+    transform: scale(1.15);
+    text-decoration: none;
+}
+
+a:visited {
+    color: #d6e0ed;
+    text-decoration: none;
+}
