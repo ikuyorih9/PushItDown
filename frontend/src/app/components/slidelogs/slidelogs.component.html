@@ -1,0 +1,27 @@
+<div class="navigationDiv">
+    <button (click)="prev()">&#10094;</button>
+    <div>
+        <p>{{frames[index].title}}</p>
+    </div>
+    <button (click)="next()">&#10095;</button>
+</div>
+<div class="slideDiv">
+    <div class="filterDiv">
+        <div class = "fieldsDiv">
+            @for(field of frames[index].filterFields; track $index){
+                <p>{{field.label}}</p>
+                <input
+                    [(ngModel)]="filtros[field.name]" 
+                    type={{field.type}}
+                >
+            }
+        </div>
+        <button id="bFiltrar" (click)="applyFilters()">Filtrar</button>
+        <button id="bTodos" (click)="resetFilters()">Todos</button>
+    </div>
+    <app-tabela 
+        #tabela
+        [tableType]="frames[index].tableType"
+        [tableColumns]="frames[index].tableColumns"
+    ></app-tabela>
+</div>

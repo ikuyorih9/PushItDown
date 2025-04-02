@@ -1,19 +1,28 @@
+<app-header></app-header>
 <div>
   <h1>Bem vindo, {{username}}!</h1>
   
   <div>
     <app-image-card
-    imgSrc = "assets/pernalonga_resting.png"
-    imgAlt = "Imagem do Pernalonga na praia, com óculos escuros"
-    caption = "Pernalonga foi a praia!"
+      #imagecard_pernalonga
+      imgSrc = "assets/pernalonga_resting.png"
+      imgSrcAlternative="assets/pernalonga_working.png"
+      imgAlt = "Imagem do Pernalonga na praia, com óculos escuros."
+      imgAltAlternative="Imagem do Pernalonga trabalhando na esquina."
+      caption = "Pernalonga foi a praia!"
+      captionAlternative="Pernalonga trabalhando..."
     ></app-image-card>
     
-    <app-timer></app-timer>
+    <app-timer (trocarImagem)="trocarImagem()"></app-timer>
     
     <app-image-card
-    imgSrc = "assets/picapau_resting.png"
-    imgAlt = "Imagem do Picapau dormindo."
-    caption = "Picapau foi dormir!"
+      #imagecard_picapau
+      imgSrc = "assets/picapau_resting.png"
+      imgSrcAlternative="assets/picapau_working.png"
+      imgAlt = "Imagem do Picapau dormindo."
+      imgAltAlternative="Imagem do Picapau trabalhando na limpeza do navio."
+      caption = "Picapau foi dormir!"
+      captionAlternative="Picapau trabalhando..."
     ></app-image-card>
   </div>
 

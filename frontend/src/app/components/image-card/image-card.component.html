@@ -1,4 +1,10 @@
 <div>
-    <img [src]="imgSrc" [alt]="imgAlt">
-    <p>{{caption}}</p>
+    @if(currentImage === 0){
+        <img [src]="imgSrc" [alt]="imgAlt" [@fadeAnimation]>
+        <p>{{caption}}</p>
+    }
+    @else {
+        <img [src]="imgSrcAlternative" [alt]="imgAltAlternative" [@fadeAnimation]>
+        <p>{{captionAlternative}}</p>
+    }
 </div>

@@ -1,0 +1,21 @@
+<app-header
+    [bInfo]="[]"
+></app-header>
+<div id="mainDiv">
+    <h1> Realize seu cadastro!</h1>
+    <form [formGroup]="profileForm" (ngSubmit)="submit()">
+        <div>
+            <label> Username</label>
+            <input type="text" formControlName="username">
+        </div>
+        <div>
+            <label>Nome</label>
+            <input type="text" formControlName="nome">
+        </div>
+        <div>
+            <label>Senha</label>
+            <input type="password" formControlName="senha">
+        </div>
+        <button type="submit">Cadastrar</button>
+    </form>
+</div>

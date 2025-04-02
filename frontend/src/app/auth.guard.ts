@@ -12,7 +12,6 @@ import { AuthService } from "./services/auth.service";
             return true;
         }
         this.authService.redirectUrl = state.url; 
-        //   this.router.navigate(['/login']);
         this.authService.login();
         return false;
     }

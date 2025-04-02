@@ -3,17 +3,23 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpInterceptorFn
 import { Observable } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    console.log("INTERCEPTOR!!!!!")
-    const injector = inject(Injector); // ✅ Inject the Injector instead of AuthService
-    const authService = injector.get(AuthService); // ✅ Retrieve AuthService dynamically
-    const token = authService.token;
-
-    if (token) {
-        req = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` }
-        });
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const token = sessionStorage.getItem('access_token');
+    if (req.url.includes('/')) {
+        console.log("Não vou adicionar o token...");
+        return next.handle(req);
     }
 
-    return next(req);
-};
+    if (token) {
+        console.log("Adicionando token no header...");
+        const cloned = req.clone({
+        headers: req.headers.set('Authorization', `Bearer ${token}`)
+      });
+      return next.handle(cloned);
+    }
+
+    return next.handle(req);
+  }
+}

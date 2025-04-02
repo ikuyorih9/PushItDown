@@ -1,3 +1,10 @@
 .mainDiv {
     margin-top:50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mainDiv > div{
+    width: 100%;
 }

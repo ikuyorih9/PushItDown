@@ -5,11 +5,13 @@ import { provideRouter } from '@angular/router';
 import {routeConfig} from './app/routes';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { importProvidersFrom } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { AuthInterceptor } from './app/auth.interceptor';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    
+    provideAnimations(),
     provideProtractorTestingSupport(), 
     provideRouter(routeConfig),
     provideHttpClient(),

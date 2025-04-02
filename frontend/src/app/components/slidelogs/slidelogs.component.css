@@ -1,0 +1,100 @@
+.navigationDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 5px;
+    
+}
+
+.navigationDiv > * {
+    color: #d6e0ed;
+    border-radius: 10px;
+    background-color: #1f3d63;
+}
+
+.navigationDiv > button {
+    width: 10%;
+    border: none;
+    border-radius: 10px;
+    margin: 0px 2px 0px 2px;
+}
+
+.navigationDiv > button:hover{
+    color: #d6e0ed;
+    background-color: #3466a5;
+    transform: scale(1.05);
+}
+
+.navigationDiv > div {
+    color: #d6e0ed;
+    font-size: 32px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.navigationDiv > div > p {
+    padding:0px;
+    margin:10px 0px 10px 0px;
+}
+
+.slideDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-around;
+    align-items: flex-start;
+
+    
+    width: 50vw;
+    border-radius: 10px;
+    padding: 30px 10px 30px 10px;
+    background-color: #fff5eb;
+}
+
+.filterDiv {
+    border-radius: 15px;
+    background-color: #d6e0ed;
+    padding: 10px 15px 10px 15px;
+}
+
+.fieldsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fieldsDiv > p{
+    padding:0px;
+    margin: 5px 0px 5px 0px;
+}
+
+.fieldsDiv > input {
+    width: 15vw;
+}
+
+#bFiltrar { 
+    float: right;
+    width: 30%;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px 5px 5px;
+    color:white;
+    background-color: #1f3d63;
+}
+
+#bTodos { 
+    float: left;
+    width: 30%;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px 5px 5px;
+    color:white;
+    background-color: #1f3d63;
+}
+
+button:hover{
+    color: white;
+    background-color: #3466a5;
+    transform: scale(1.05);
+}
