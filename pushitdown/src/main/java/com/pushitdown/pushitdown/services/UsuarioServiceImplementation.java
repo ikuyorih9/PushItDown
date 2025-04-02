@@ -29,7 +29,7 @@ public class UsuarioServiceImplementation implements UsuarioService{
         // Verifica se o usuário está presente na base de dados.
         if (usuarioRepository.findByUsername(dto.getUsername()).isPresent()){
             // Lança a exceção de usuário já registrado.
-            throw new UserRegisteredException("Usuário " + dto.getUsername() + "já está cadastrado no sistema.");
+            throw new UserRegisteredException("Usuário " + dto.getUsername() + " já está cadastrado no sistema.");
         }
         
         // Cria um novo usuário do DTO.

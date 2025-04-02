@@ -46,9 +46,9 @@ public class GlobalExceptionHandler {
         System.out.println("[CONSTRAINT VIOLATION EXCEPTION]: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex){
-        System.out.println("[RUNTIME EXCEPTION]: " + ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
+    // @ExceptionHandler(RuntimeException.class)
+    // public ResponseEntity<String> handleRuntimeException(RuntimeException ex){
+    //     System.out.println("[RUNTIME EXCEPTION]: " + ex.getMessage() + ex.getStackTrace());
+    //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    // }
 }

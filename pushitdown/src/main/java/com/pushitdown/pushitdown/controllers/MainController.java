@@ -16,7 +16,9 @@ import java.nio.channels.Pipe.SourceChannel;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("home")
-@CrossOrigin(origins = "client.local:8080") // Permite requisições do frontend
 public class MainController {
 
     private RegistroService registroService;
@@ -68,25 +69,23 @@ public class MainController {
     }
 
     @GetMapping("{username}/expedientes")
-    public List<ExpedienteDTO> obtemExpedientes(@PathVariable String username){
-        List<LocalDate> diasTrabalhados = registroService.retornaDiasDeTrabalho(username);
-        List<ExpedienteDTO> expedientes =  new ArrayList<>();
-        for(LocalDate dia : diasTrabalhados){
-            Long horas = registroService.obtemTempoDeTrabalhoPorData(username, dia);
-            expedientes.add(new ExpedienteDTO(dia, horas));
-        }
+    public List<ExpedienteDTO> exp(
+        @PathVariable String username,
+        @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+        @RequestParam(required = false) Integer periodo 
+    ){
+        return registroService.retornaExpedientes(username, data, periodo);
+    }
 
-        return expedientes;
-    }   
-    
     @GetMapping("{username}/registros")
-    public List<RegistroDTO> obtemRegistros(@PathVariable String username){
-        List<Registro> registros = registroService.retornaRegistrosPorUsername(username);
-        List<RegistroDTO> dto = new ArrayList<>();
-        for(Registro r : registros){
-            dto.add(new RegistroDTO(r.getId().getData(), r.getId().getHora(), r.getTipo()));
-        }
-        return dto;
+    public List <RegistroDTO> obtemRegistrosFiltrados(
+        @PathVariable String username,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+        @RequestParam(required = false) String tipo,
+        @RequestParam(required = false) Integer periodo 
+    ){
+        tipo = tipo != null ? tipo.toUpperCase() : null;
+        return registroService.retornaRegistrosFiltrados(username, data, tipo, periodo);
     }
     
 }

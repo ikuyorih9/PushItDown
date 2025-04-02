@@ -4,13 +4,20 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.math.BigDecimal;
+import java.sql.Date;
 
+
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.pushitdown.pushitdown.exceptions.NotFoundException;
 import com.pushitdown.pushitdown.id.RegistroId;
+import com.pushitdown.pushitdown.models.ExpedienteDTO;
 import com.pushitdown.pushitdown.models.Registro;
 import com.pushitdown.pushitdown.models.RegistroDTO;
 import com.pushitdown.pushitdown.models.Usuario;
@@ -76,5 +83,66 @@ public class RegistroServiceImplementation implements RegistroService{
         return registroRepository.findRegistrosByUsername(username);
     }
 
+    @Override
+    public List<RegistroDTO> retornaRegistrosFiltrados(String username, LocalDate data, String tipo, Integer periodo){
+        List<Registro> registros = registroRepository.findByParams(username, data, tipo);
+        List<RegistroDTO> dto = new ArrayList<>();
+        
+        periodo = (periodo == null || periodo > registros.size()) ? registros.size() : periodo;
+        
+        for(int i = 0; i < periodo; i++){
+            Registro r = registros.get(i);
+            dto.add(new RegistroDTO(r.getId().getData(), r.getId().getHora(), r.getTipo()));
+        }
 
+        return dto;
+    }
+
+    @Override
+    public List<RegistroDTO> retornaRegistrosFiltradosPorMes(String username, Integer mes, Integer ano, Integer periodo){
+        List<Registro> registros = registroRepository.findByMonth(username, mes, ano);
+        List<RegistroDTO> dto = new ArrayList<>();
+
+        periodo = (periodo == null || periodo > registros.size()) ? registros.size() : periodo;
+
+        for(int i = 0; i < periodo; i++){
+            Registro r = registros.get(i);
+            dto.add(new RegistroDTO(r.getId().getData(), r.getId().getHora(), r.getTipo()));
+        }
+
+        return dto;
+    }
+
+    @Override
+    public List<ExpedienteDTO> retornaExpedientes(String username, LocalDate data, Integer periodo){
+        Integer mes = null;
+        Integer ano = null;
+        if(data != null){
+            mes = data.getMonthValue();
+            ano = data.getYear();
+        }
+
+        List<Object[]> resultado = registroRepository.findExpedientesPorData(username, mes, ano);
+
+        List<ExpedienteDTO> e = new ArrayList<>();
+        for (Object[] row : resultado) {
+            LocalDate day = ((Date) row[0]).toLocalDate();
+            long millis = ((BigDecimal) row[1]).longValue();
+            if(millis < 0){
+                millis = 0;
+            }
+            e.add(new ExpedienteDTO(day, millis));
+        }        
+
+        List<ExpedienteDTO> expedientes = new ArrayList<>();
+
+        periodo = (periodo == null || periodo > e.size()) ? e.size() : periodo;
+
+        for(int i = 0; i < periodo; i++){
+            ExpedienteDTO expediente = e.get(i);
+            expedientes.add(new ExpedienteDTO(expediente.getData(), expediente.getHoras()));
+        }
+
+        return expedientes;
+    }
 }
