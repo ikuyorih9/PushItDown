@@ -1,3 +1,4 @@
+# PushItDown é uma aplicação para registro de entradas e saídas de expediente! ⏱️
 ![Banner](./banner.jpg)
 
 <p align="center">
@@ -6,7 +7,6 @@
 <img src="https://img.shields.io/badge/PostgreSQL-17.2-lightgray?logoColor=blue&logoSize=blue&labelColor=yellow&color=gray">
 </p>
 
-# PushItDown é uma aplicação para registro de entradas e saídas de expediente! ⏱️
 
 # 📁 Estrutura de diretórios
 
