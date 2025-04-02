@@ -18,6 +18,17 @@
 
 > **📢OBS**: alguns diretórios podem não ter sido implementados ou removidos.
 
+# 🖼️ Sobre o frontend
+
+Os endpoints do frontend são:
+
+```
+localhost:4200 # homepage do PushItDown.
+├── historico/ # para verificar todos os registros.
+├── login/ # realizar login e cadastro.
+└── logout/ # apenas para chamar o backend para o logout.
+```
+
 # 🪄 Tecnologias do projeto
 
 ### 👤 Autenticação com Oauth2
@@ -149,3 +160,4 @@ Os endpoints da API são:
 - `/home/{username}/registros`: para recuperar todos os registros do usuário de username *{username}*;
 
 - `/home/{username}/expedientes`: para recuperar todos os expedientes diários do usuário de username *{username}*;
+
