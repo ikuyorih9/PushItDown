@@ -1,3 +1,5 @@
+![Banner](./banner.jpg)
+
 ![Static Badge](https://img.shields.io/badge/SpringBoot-3.4.3-lightgray?logoColor=blue&logoSize=blue&labelColor=orange&color=gray)
 ![Static Badge](https://img.shields.io/badge/Angular-19.2.1-lightgray?logoColor=blue&logoSize=blue&labelColor=darkred&color=gray)
 ![Static Badge](https://img.shields.io/badge/PostgreSQL-17.2-lightgray?logoColor=blue&logoSize=blue&labelColor=yellow&color=gray)
@@ -6,9 +8,7 @@
 
 # 📁 Estrutura de diretórios
 
-* `authenticationserver`: diretório que contém o servidor de autenticação, que é executado em `auth-server.local:9000`;
-
-* `pushitdown`: aplicação que cria os endpoints, opera na base de dados e contém o frontend básico;
+* `backend`: contém um projeto em SpringBoot 3.4.3 responsável por cuidar da API e da sua proteção. Ele está configurado na porta 8080;
 
 * `frontend`: diretório que contém o projeto do frontend em *Angular*;
 
@@ -20,30 +20,42 @@
 
 ### 👤 Autenticação com Oauth2
 
-A autenticação funciona com dois projetos: o `authenticationserver` e o `pushitdown`. O primeiro é responsável por criar dois endpoints importantes na porta `9000`:
+O projeto do backend implementa o fluxo Oauth2, possuindo os endpoints responsáveis pelo fluxo de autenticação:
 
-* `/oauth2/authorize/` -> endpoint para obter o código de autorização. Nesse estágio do fluxo, o cliente envia o seu *id* para obter um código que poderá ser trocado por um token.
-* `/oauth2/token` -> com o código de autorização, um cliente pode enviar seu *id*, *token* e outras informações para obter um token.
+* `/oauth2/authorization`: retorna o código de autenticação para trocá-lo por um token;
+* `oauth2/jwks`: dado o código de autenticação, retorna o token.
 
-É importante notar que esses endpoints do servidor são protegidos e podem ser acessados por um formulário de login básico do Spring Security. No entanto, para que a própria aplicação possa validar e aceitar esses tokens ao receber requisições protegidas, ela precisa atuar também como um Resource Server.
+Com o token obtido, ao realizar requisições com `Bearer {Token}`, o usuário é permitido de acessar os endpoints protegidos.
 
+Para implementar esse fluxo, é preciso adicionar os componentes de código que permitem a proteção e a autenticação por formulário. 
+
+A função `authorizationServerSecurityFilterChain` é um filtro responsável por proteger os endpoints do *authorization server*. É importante notar que ele, naturalmente, não é responsável por validar tokens, mas por fornecê-los. Como o backend também possui a API protegida, é preciso que os tokens sejam validados e, para isso, há a implementação da função `oauth2ResourceServer`. Logo, toda requisição com um token válido será aceita. Também é importante notar a função `authorizeHttpRequests`, que, ao configurar `.anyRequest().authenticated()`, faz com que o acesso aos endpoints do *authorization server* seja protegido.
 
 ```
 @Bean
 @Order(1)
-public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+        throws Exception {
+    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+            OAuth2AuthorizationServerConfigurer.authorizationServer();
+
     http
-    .authorizeHttpRequests((authorize) -> authorize
-        .anyRequest().authenticated()
-    )
-    .oauth2ResourceServer(resourceServer -> resourceServer
-        .jwt(Customizer.withDefaults())
-    )
-    ⁝
+        ⁝
+        .authorizeHttpRequests((authorize) -> authorize
+            .anyRequest().authenticated()
+        )
+        .oauth2ResourceServer(resourceServer -> resourceServer
+            .jwt(Customizer.withDefaults())
+        )
+        ⁝
+
     return http.build();
 }
 ```
-> 💻 ***Código**: endpoints do servidor protegidos com `authenticated()` e com suporte para validação de tokens com `oauth2ResourceServer`.*
+> 💻 ***Código:** função filtro authorizationServerSecurityFilterChain resumida.*
+
+
+Para proteger a API, a função filtro `defaultSecurityFilterChain` é aplicada, com implementação parecida com o filtro do *authorization server*. Aqui, a diferença está na implementação de `formLogin(Customizer.withDefaults())`, que apresenta um formulário padrão básico para que o usuário possa se autenticar com *usuário* e *senha*. O usuário é buscado na base de dados por meio de um `CustomUserDetailsService`.
 
 ```
 @Bean
@@ -51,55 +63,18 @@ public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity h
 public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
         throws Exception {
     http
-    .authorizeHttpRequests((authorize) -> authorize
-        .anyRequest().authenticated()
-    )
-    .formLogin(Customizer.withDefaults());
+        ⁝
+        .authorizeHttpRequests((authorize) -> authorize
+            .anyRequest().authenticated()
+        )
+        .oauth2ResourceServer(resourceServer -> resourceServer
+            .jwt(Customizer.withDefaults())
+        )
+        .formLogin(Customizer.withDefaults());
     return http.build();
 }
 ```
-> 💻 ***Código**: formulário padrão ativado com `formLogin(Customizer.withDefautls())`.*
-
-No lado da aplicação API, esse processo de acessar os dois endpoints para obter o token e permitir o acesso foi feito automaticamente, através da configuração:
-
-```
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-    http
-    .oauth2Login(oauth2Login -> oauth2Login.defaultSuccessUrl("/redirect", true))
-    .oauth2Client(Customizer.withDefaults());
-    ⁝
-    return http.build();
-}
-```
-> 💻 ***Código**: configuração do a aplicação para ser autenticado automaticamente.*
-
-onde `oauth2Login` permite que o usuário utilize um provedor (authentication server) para se conectar, estabelecendo a comunicação entre os endpoints para gerar o token. O `oauth2Client` habilita o suporte para OAuth2 Client, que permite que a aplicação atue como um cliente OAuth2 e obtenha tokens de acesso para chamar APIs protegidas.
-
-Mas para que a API siga corretamente o fluxo de autenticação, é preciso conhecer as informações do cliente, as suas permissões e configurar o redirecionamento. Isso pode ser feito através do arquivo `resources/application.yml`, que configura:
-
-```
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          pushitdown:
-            provider: authserver-provider
-            client-id: pushitdown
-            client-secret: pushitdown
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://client.local:8080/login/oauth2/code/pushitdown"
-            scope: openid, profile
-        provider:
-          authserver-provider:
-            issuer-uri: http://auth-server.local:9000
-            authorization-uri: http://auth-server.local:9000/oauth2/authorize
-            token-uri: http://auth-server.local:9000/oauth2/token
-            user-name-attribute: sub
-```
-> 💻 ***Código**: configuração do das informações de autenticação.*
-
+> 💻 ***Código:** função filtro defaultSecurityFilterChain resumida.*
 ---
 
 ### 🎲 Busca por usuários na base de dados para autenticação
@@ -159,4 +134,16 @@ public AuthenticationManager authenticationManager(
 
 ---
 
-### 🌐 Criação dos endpoints
+### 🌐 Os endpoints
+
+Os endpoints da API são:
+
+- `/auth/cadastrar`: enviando um JSON do tipo {username, nome, senha}, o backend consegue cadastrar o usuário na base de dados. A resposta pode ser ***201 (CREATED)***, caso o usuário seja corretamente cadastrado, ou ***409 (CONFLICT)***, caso o usuário já esteja cadastrado;
+
+- `/home/{username}/entrace`: para registrar uma **entrada** do usuário de username *{username}*;
+
+- `/home/{username}/exit`: para registrar uma **saída** do usuário de username *{username}*;
+
+- `/home/{username}/registros`: para recuperar todos os registros do usuário de username *{username}*;
+
+- `/home/{username}/expedientes`: para recuperar todos os expedientes diários do usuário de username *{username}*;
